@@ -3,9 +3,7 @@ package com.example.practice.domain.order;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,14 +66,13 @@ public class improveMappingTest {
 		transaction.begin();
 
 		Parent parent = new Parent();
-		parent.setId1("id1");
-		parent.setId2("id2");
+		parent.setId(new ParentId("id1", "id2"));
 
 		entityManager.persist(parent);
 		transaction.commit();
 
 		entityManager.clear();
 		var parent1 = entityManager.find(Parent.class, new ParentId("id2", "id2"));
-		log.info("{}{}", parent1.getId1(), parent1.getId2());
+		log.info("{}{}", parent1.getId().getId1(), parent1.getId().getId2());
 	}
 }
