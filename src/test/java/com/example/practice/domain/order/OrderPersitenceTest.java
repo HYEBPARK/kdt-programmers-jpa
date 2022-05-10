@@ -9,6 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -69,5 +70,35 @@ public class OrderPersitenceTest {
 		Member orderMemberEntity = entityManager.find(Member.class, orderEntity.getMemberId());
 		// orderEntity.getMember() // 객체중심 설계라면 이렇게 해야하지 않을까?
 		log.info("nick : {}", orderMemberEntity.getNickName());
+	}
+
+	@Test
+	void 연관관계_테스트() {
+		var entityManager = entityManagerFactory.createEntityManager();
+		var transaction = entityManager.getTransaction();
+
+		transaction.begin();
+
+		Member member = new Member();
+		member.setName("hyebpark");
+		member.setNickName("hyeb");
+		member.setAddress("부산시 몰랑몰랑");
+		member.setAge(12);
+
+		entityManager.persist(member);
+		Order order = new Order();
+		order.setUuid(UUID.randomUUID().toString());
+		order.setOrderStatus(OPENED);
+		order.setOrderDateTime(LocalDateTime.now());
+		order.setMemo("문 앞에 두고 가주세요~");
+
+		entityManager.persist(order);
+		transaction.commit();
+
+		entityManager.clear();
+		entityManager.find(Order.class, order.getUuid());
+
+		log.info("{}", order.getMember().getNickName());
+		log.info("{}", order.getMember().getOrders().size());
 	}
 }
