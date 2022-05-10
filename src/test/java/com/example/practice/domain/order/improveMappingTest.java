@@ -11,6 +11,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.example.practice.domain.parent.Parent;
+import com.example.practice.domain.parent.ParentId;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -55,5 +58,24 @@ public class improveMappingTest {
 
 		entityManager.persist(order);
 		transaction.commit();
+	}
+
+	@Test
+	void id_test() {
+		var entityManager = entityManagerFactory.createEntityManager();
+		var transaction = entityManager.getTransaction();
+
+		transaction.begin();
+
+		Parent parent = new Parent();
+		parent.setId1("id1");
+		parent.setId2("id2");
+
+		entityManager.persist(parent);
+		transaction.commit();
+
+		entityManager.clear();
+		var parent1 = entityManager.find(Parent.class, new ParentId("id2", "id2"));
+		log.info("{}{}", parent1.getId1(), parent1.getId2());
 	}
 }
