@@ -1,8 +1,10 @@
 package com.example.practice.domain.order;
 
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 @Entity
+@DiscriminatorValue("FOOD")
 public class Food extends Item {
 	private String chef;
 
