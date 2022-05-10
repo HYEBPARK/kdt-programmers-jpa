@@ -57,19 +57,19 @@ public class OrderPersitenceTest {
 
 		Order order = new Order();
 		order.setUuid(UUID.randomUUID().toString());
-		order.setOrderDateTime(LocalDateTime.now());
+		order.setOrderDatetime(LocalDateTime.now());
 		order.setOrderStatus(OPENED);
 		order.setMemo("문 앞에 두고 가주세요~");
-		order.setMemberId(memberEntity.getId()); // 외래키를 직접 지정
+		// order.setMemberId(memberEntity.getId()); // 외래키를 직접 지정
 
 		entityManager.persist(order);
 		transaction.commit();
 
 		Order orderEntity = entityManager.find(Order.class, order.getUuid());
 		// FK 를 이용해 회원 다시 조회
-		Member orderMemberEntity = entityManager.find(Member.class, orderEntity.getMemberId());
+		// Member orderMemberEntity = entityManager.find(Member.class, orderEntity.getMemberId());
 		// orderEntity.getMember() // 객체중심 설계라면 이렇게 해야하지 않을까?
-		log.info("nick : {}", orderMemberEntity.getNickName());
+		// log.info("nick : {}", orderMemberEntity.getNickName());
 	}
 
 	@Test
@@ -89,7 +89,7 @@ public class OrderPersitenceTest {
 		Order order = new Order();
 		order.setUuid(UUID.randomUUID().toString());
 		order.setOrderStatus(OPENED);
-		order.setOrderDateTime(LocalDateTime.now());
+		order.setOrderDatetime(LocalDateTime.now());
 		order.setMemo("문 앞에 두고 가주세요~");
 
 		entityManager.persist(order);

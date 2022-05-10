@@ -1,12 +1,11 @@
 package com.example.practice.domain.order;
 
-import java.util.UUID;
-
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -18,11 +17,14 @@ public class OrderItem {
 	private Long id;
 	private int price;
 	private int quantity;
-	//fk
-	@Column(name = "order_id")
-	private String orderId;
-	@Column(name = "item_id")
-	private Long itemId;
+
+	@ManyToOne
+	@JoinColumn(name = "order_id", referencedColumnName = "id")
+	private Order order;
+
+	@ManyToOne
+	@JoinColumn(name = "item_id", referencedColumnName = "id")
+	private Item item;
 
 	public Long getId() {
 		return id;
@@ -48,19 +50,19 @@ public class OrderItem {
 		this.quantity = quantity;
 	}
 
-	public String getOrderId() {
-		return orderId;
+	public Order getOrder() {
+		return order;
 	}
 
-	public void setOrderId(String orderId) {
-		this.orderId = orderId;
+	public void setOrder(Order order) {
+		this.order = order;
 	}
 
-	public Long getItemId() {
-		return itemId;
+	public Item getItem() {
+		return item;
 	}
 
-	public void setItemId(Long itemId) {
-		this.itemId = itemId;
+	public void setItem(Item item) {
+		this.item = item;
 	}
 }

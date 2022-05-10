@@ -1,15 +1,19 @@
 package com.example.practice.domain.order;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -20,22 +24,21 @@ public class Order {
 	@Column(name = "id")
 	private String uuid;
 
-	@Column(name = "memo")
-	private String memo;
+	@Column(name = "order_datetime", columnDefinition = "TIMESTAMP")
+	private LocalDateTime orderDatetime;
 
-	@Enumerated(value = EnumType.STRING)
+	@Enumerated(EnumType.STRING)
 	private OrderStatus orderStatus;
 
-	@Column(name = "order_datetime", columnDefinition = "TIMESTAMP")
-	private LocalDateTime orderDateTime;
+	@Lob
+	private String memo;
 
-	//fk
-	@Column(name = "member_id", insertable = false, updatable = false)
-	private Long memberId;
-
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id", referencedColumnName = "id")
 	private Member member;
+
+	@OneToMany(mappedBy = "order")
+	private List<OrderItem> orderItems = new ArrayList<>();
 
 	public String getUuid() {
 		return uuid;
@@ -45,12 +48,12 @@ public class Order {
 		this.uuid = uuid;
 	}
 
-	public String getMemo() {
-		return memo;
+	public LocalDateTime getOrderDatetime() {
+		return orderDatetime;
 	}
 
-	public void setMemo(String memo) {
-		this.memo = memo;
+	public void setOrderDatetime(LocalDateTime orderDatetime) {
+		this.orderDatetime = orderDatetime;
 	}
 
 	public OrderStatus getOrderStatus() {
@@ -61,20 +64,12 @@ public class Order {
 		this.orderStatus = orderStatus;
 	}
 
-	public LocalDateTime getOrderDateTime() {
-		return orderDateTime;
+	public String getMemo() {
+		return memo;
 	}
 
-	public void setOrderDateTime(LocalDateTime orderDateTime) {
-		this.orderDateTime = orderDateTime;
-	}
-
-	public Long getMemberId() {
-		return memberId;
-	}
-
-	public void setMemberId(Long memberId) {
-		this.memberId = memberId;
+	public void setMemo(String memo) {
+		this.memo = memo;
 	}
 
 	public Member getMember() {
@@ -82,11 +77,19 @@ public class Order {
 	}
 
 	public void setMember(Member member) {
-		if (Objects.nonNull(this.member)) {
-			member.getOrders().remove(this);
+		if (this.member != null) {
+			this.member.getOrders().remove(this);
 		}
-
 		this.member = member;
 		member.getOrders().add(this);
+	}
+
+	public List<OrderItem> getOrderItems() {
+		return orderItems;
+	}
+
+	public void addOrderItems(OrderItem orderItem) {
+		orderItems.add(orderItem);
+		orderItem.setOrder(this);
 	}
 }
