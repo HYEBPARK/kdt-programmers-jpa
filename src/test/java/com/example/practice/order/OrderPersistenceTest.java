@@ -1,4 +1,4 @@
-package com.example.practice.domain.order;
+package com.example.practice.order;
 
 import static com.example.practice.domain.order.OrderStatus.*;
 
@@ -9,16 +9,18 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 
-import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import com.example.practice.domain.order.Member;
+import com.example.practice.domain.order.Order;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @SpringBootTest
-public class OrderPersitenceTest {
+public class OrderPersistenceTest {
 
 	@Autowired
 	EntityManagerFactory entityManagerFactory;
