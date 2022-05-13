@@ -16,33 +16,32 @@ import javax.persistence.Table;
 public class Member {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
 	@Column(name = "name", nullable = false, length = 30)
 	private String name;
 
-	@Column(name = "nick_name", nullable = false, length = 30, unique = true)
+	@Column(nullable = false, length = 30, unique = true)
 	private String nickName;
 
-	@Column(name = "age", nullable = false)
 	private int age;
 
 	@Column(name = "address", nullable = false)
 	private String address;
 
-	@Column(name = "description")
+	@Column(name = "description", nullable = true)
 	private String description;
 
 	@OneToMany(mappedBy = "member")
 	private List<Order> orders = new ArrayList<>();
 
-	public Long getId() {
-		return id;
+	public void addOrder(Order order) {
+		order.setMember(this);
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public Long getId() {
+		return id;
 	}
 
 	public String getName() {
@@ -89,7 +88,4 @@ public class Member {
 		return orders;
 	}
 
-	public void setOrders(Order order) {
-		order.setMember(this);
-	}
 }

@@ -3,7 +3,9 @@ package com.example.practice.domain.order;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -18,8 +20,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "orders")
-public class Order {
-
+public class Order extends BaseEntity {
 	@Id
 	@Column(name = "id")
 	private String uuid;
@@ -33,12 +34,25 @@ public class Order {
 	@Lob
 	private String memo;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "member_id", referencedColumnName = "id")
 	private Member member;
 
-	@OneToMany(mappedBy = "order")
+	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<OrderItem> orderItems = new ArrayList<>();
+
+	public void setMember(Member member) {
+		if(Objects.nonNull(this.member)) {
+			this.member.getOrders().remove(this);
+		}
+
+		this.member = member;
+		member.getOrders().add(this);
+	}
+
+	public void addOrderItem(OrderItem orderItem) {
+		orderItem.setOrder(this);
+	}
 
 	public String getUuid() {
 		return uuid;
@@ -76,20 +90,8 @@ public class Order {
 		return member;
 	}
 
-	public void setMember(Member member) {
-		if (this.member != null) {
-			this.member.getOrders().remove(this);
-		}
-		this.member = member;
-		member.getOrders().add(this);
-	}
-
 	public List<OrderItem> getOrderItems() {
 		return orderItems;
 	}
 
-	public void addOrderItems(OrderItem orderItem) {
-		orderItems.add(orderItem);
-		orderItem.setOrder(this);
-	}
 }
